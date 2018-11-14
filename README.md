@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-# Kjørende versjon av applikasjonen
+## Kjørende versjon av applikasjonen
 
 En åpen versjon av applikasjonen kan bli funnet her: https://valglokale-demo.herokuapp.com/
 
