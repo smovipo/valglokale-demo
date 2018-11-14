@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { DropdownButton, MenuItem, Table } from 'react-bootstrap';
 
 // The topmost component, all information will be passed down from here
 class App extends Component {
@@ -107,16 +107,35 @@ class App extends Component {
           console.log(result.pages);
 
           // Add the new results at the end
+          // NOTE: Commented line for when multiple pages can be accessed
+          // NOTE: When accessing multiple pages, MAKE SURE that votinAreas votinAreas
+          // cleared when the user selects another county and municipality
           this.setState({
-            votingAreas: [...this.state.votingAreas, result.entries]
+            // votingAreas: [...this.state.votingAreas, result.entries]
+            votingAreas: result.entries
           });
         }
       )
   }
 
+  // Creating the table-instances for the different voting places
+  createTableElements(places) {
+    return places.map((place) => (
+      <tr>
+        <td>{place.polling_place_name}</td>
+        <td>{place.address_line}</td>
+        <td>{place.postal_code}</td>
+        <td>{place.area}</td>
+        <td>{place.info_text}</td>
+        <td>{place.election_day_voting === "1" ? "Ja" : "Nei"}</td>
+        <td>{place.opening_hours}</td>
+      </tr>
+    ));
+  }
+
 
   render() {
-    const { error, isLoaded, counties, municipalities } = this.state;
+    const { error, isLoaded, counties, municipalities, votingAreas } = this.state;
 
     if (error) {
       return <div>Error: {error.message}</div>
@@ -140,6 +159,22 @@ class App extends Component {
           >
             {this.createMuncipialityDropdownMenuElements(municipalities)}
           </DropdownButton>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Navn på valglokale</th>
+                <th>Addresse</th>
+                <th>Postkode</th>
+                <th>Poststed</th>
+                <th>Info om stedet</th>
+                <th>Åpent på valgdagen</th>
+                <th>Åpningstider</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.createTableElements(votingAreas)}
+            </tbody>
+          </Table>
         </div>
       );
     }
