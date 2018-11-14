@@ -92,24 +92,27 @@ class App extends Component {
   }
 
   // Finding all voting places in the selected municipality
+  // NOTE: Not solved how to go through the pages when there are more than one
   getVotingPlaces(municipalityNumber) {
     // Need to remove an eventual leading 0
     const parsedMunicipalityNumber = parseInt(municipalityNumber, 10);
 
-    console.log(parsedMunicipalityNumber);
 
-    fetch(`https://hotell.difi.no/api/json/valg/valglokaler/2017?municipality_id=${parsedMunicipalityNumber}`)
+    // TODO: Solve how to move to the next page
+    fetch(`https://hotell.difi.no/api/json/valg/valglokaler/2017?page=${1}&municipality_id=${parsedMunicipalityNumber}`)
       .then(res => res.json())
       .then(
         (result) => {
           console.log(result);
+          console.log(result.pages);
+
+          // Add the new results at the end
           this.setState({
-            votingAreas: result.entries
+            votingAreas: [...this.state.votingAreas, result.entries]
           });
         }
       )
   }
-
 
 
   render() {
