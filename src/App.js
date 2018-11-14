@@ -51,6 +51,7 @@ class App extends Component {
         eventKey={county.nummer}
         onClick={() => {
           this.setState({
+            votingAreas: [],
             setCounty: county.navn,
             setMunicipality: "Velg kommune",
             isMunicipalityDisabled: false
@@ -97,16 +98,10 @@ class App extends Component {
     // Need to remove an eventual leading 0
     const parsedMunicipalityNumber = parseInt(municipalityNumber, 10);
 
-
-    // TODO: Solve how to move to the next page
     fetch(`https://hotell.difi.no/api/json/valg/valglokaler/2017?page=${1}&municipality_id=${parsedMunicipalityNumber}`)
       .then(res => res.json())
       .then(
         (result) => {
-          console.log(result);
-          console.log(result.pages);
-
-          // Add the new results at the end
           // NOTE: Commented line for when multiple pages can be accessed
           // NOTE: When accessing multiple pages, MAKE SURE that votinAreas votinAreas
           // cleared when the user selects another county and municipality
@@ -120,8 +115,9 @@ class App extends Component {
 
   // Creating the table-instances for the different voting places
   createTableElements(places) {
+    let i = 1;
     return places.map((place) => (
-      <tr>
+      <tr key={i++}>
         <td>{place.polling_place_name}</td>
         <td>{place.address_line}</td>
         <td>{place.postal_code}</td>
@@ -146,12 +142,14 @@ class App extends Component {
     else {
       return (
         <div>
+
           <DropdownButton
             title={this.state.setCounty}
             id={'county-dropdown'}
           >
             {this.createCountyDropdownMenuElements(counties)}
           </DropdownButton>
+
           <DropdownButton
             title={this.state.setMunicipality}
             id={'municipality-dropdown'}
@@ -159,6 +157,7 @@ class App extends Component {
           >
             {this.createMuncipialityDropdownMenuElements(municipalities)}
           </DropdownButton>
+
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -175,6 +174,7 @@ class App extends Component {
               {this.createTableElements(votingAreas)}
             </tbody>
           </Table>
+
         </div>
       );
     }
